@@ -1,41 +1,167 @@
-# Expense-Tracker-Mern
-A fully-featured Expense-Tracker WebApp , built with the MERN stack.
+# 🪙 Expensify - MERN Expense Tracker
 
+A comprehensive **Expense Tracker Web Application** built using the **MERN Stack (MongoDB, Express.js, React.js, Node.js)**. The application helps users manage their daily expenses, set monthly budgets, visualize spending trends, and generate PDF reports that can be sent via email.
 
-### Backend 
-<img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" /> <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge" /> 
-### Front-end
-<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/> <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"/>
-### Database 
-<img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white"/>
+---
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/960fe4d9-fc14-49af-abcd-82cd94587293/deploy-status?branch=dev)](https://app.netlify.com/sites/track-yur-expense/deploys)
+## 🚀 Features
 
-### Installation
-1) Clone this repository  
+- 🔐 **User Authentication** – Secure user registration and login.
+- 💰 **Budget Management** – Create and manage category-wise monthly budgets.
+- 📊 **Interactive Dashboard** – Visualize expenses using dynamic charts.
+- 💸 **Expense Tracking** – Add, delete, and categorize expenses.
+- 📄 **PDF Report Generation** – Download detailed monthly expense reports.
+- 📧 **Email Reports** – Send generated PDF reports directly to users via email.
+- 👤 **Profile Management** – Personalized dashboard for each user.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React.js
+- Redux Toolkit
+- Tailwind CSS
+- Chart.js
+- React Chart.js 2
+- Axios
+- React Router DOM
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- Nodemailer
+- jsPDF
+- jsPDF-AutoTable
+- bcrypt
+
+---
+
+## 📂 Project Structure
+
+```text
+Expensify/
+├── backend/
+│   ├── controller/
+│   ├── db/
+│   ├── router/
+│   ├── utils/
+│   ├── index.js
+│   ├── package.json
+│   └── .env
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── redux/
+│   │   ├── App.js
+│   │   └── index.js
+│   └── package.json
+│
+└── README.md
 ```
-git clone https://github.com/ihtasham42/social-media-app.git
+
+---
+
+## 💻 Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/ShreyaSongara18/Expensify.git
+cd Expensify
 ```
-2) Install dependencies  
-```
-cd Expense-Tracker_Mern  
-cd frontend
+
+### 2. Install Backend Dependencies
+
+```bash
+cd backend
 npm install
-cd..
-cd client
-npm install
 ```
-3) Configure environment variables in your new .env file. To acquire your MONGO_URI, create a cluster for free over at https://www.mongodb.com/.
+
+### 3. Configure Environment Variables
+
+Create a `.env` file inside the `backend` folder and add the following variables:
+
+```env
+PORT=4000
+MONGO_URI=your_mongodb_connection_string
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
 ```
-MONGO_URI=<YOUR_MONGO_URI> 
-```
-4) Run the server
-```
-npm run server
-```
-5) Start a new terminal and run react's development server
-```
-cd social-media-app
-cd frontend
+
+> Replace the placeholder values with your own MongoDB connection string and Gmail App Password.
+
+### 4. Start the Backend Server
+
+```bash
 npm start
 ```
+
+The backend server will run at:
+
+```
+http://localhost:4000
+```
+
+### 5. Install Frontend Dependencies
+
+Open a new terminal:
+
+```bash
+cd frontend
+npm install
+```
+
+### 6. Start the Frontend
+
+```bash
+npm start
+```
+
+The application will open at:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 🔮 Future Enhancements
+
+- 🌙 Dark Mode
+- 📱 Fully Responsive Mobile UI
+- 💳 Multiple Currency Support
+- 📈 Advanced Expense Analytics
+- 🤖 AI-based Expense Insights
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository.
+2. Create a new feature branch.
+3. Commit your changes.
+4. Push your branch.
+5. Open a Pull Request.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 👩‍💻 Author
+
+**Shreya Songara**
+
+- GitHub: https://github.com/ShreyaSongara18
+- LinkedIn: https://www.linkedin.com/in/shreya-songara-a60b75312
