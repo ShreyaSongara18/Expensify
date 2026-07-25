@@ -38,18 +38,20 @@ function generatePDF(data) {
 
 // Function to send the email with the generated PDF as an attachment
 async function sendEmailWithAttachment( recipient,items) {
+    const emailUser = process.env.EMAIL_USER || 'ldead4524@gmail.com';
+    const emailPass = process.env.EMAIL_PASS || 'cppqyjfnxyhrxkzq';
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'ldead4524@gmail.com',
-            pass: 'cppqyjfnxyhrxkzq'
+            user: emailUser,
+            pass: emailPass
         }
     });
     let body = dataParserForItems(items)
       const pdfContent = generatePDF(body)
 
       const mailOptions = {
-        from:'ldead4524@gmail.com' , 
+        from: emailUser, 
         to: recipient,
         subject: 'Expense Report for This Month',
         text: 'Please find your expense report attached.',

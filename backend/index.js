@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+dotenv.config();
 require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
 const connectDb = require('../backend/db/db');
 const userRouter = require('./router/userRouter')
@@ -15,7 +16,7 @@ app.use('/expenses',expenseRouter)
 app.use('/budget', budgetRouter)
 connectDb();
 
-const port = 4000 || process.env.PORT_NO ;
+const port = process.env.PORT || 4000 ;
 app.listen(port , ()=>{
         console.log(`Server on :- ${port}`);
 })
