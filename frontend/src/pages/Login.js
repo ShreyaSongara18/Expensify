@@ -46,13 +46,15 @@ function Login() {
                 password
             });
 
-            if (response.data.statusCode !== 201) {
+            if (response.data.statusCode !== 200 && response.data.statusCode !== 201) {
                 toast.error(response.data.message);
                 return;
             }
 
             toast.success("Successfully Logged In!");
-            dispatch(setUser(response.data.message)); // Save to Redux Store and localStorage
+            const { token, user } = response.data.message;
+            localStorage.setItem('Token', token);
+            dispatch(setUser(user)); // Save to Redux Store and localStorage
             navigate('/dashboard');
         } catch (error) {
             toast.error(error.message || "Failed to log in");

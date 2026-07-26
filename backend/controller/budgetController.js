@@ -3,9 +3,10 @@ const { error, success } = require('../utils/handler');
 
 const getBudget = async (req, res) => {
     try {
-        const { userId, month, year } = req.body;
-        if (!userId || !month || !year) {
-            return res.send(error(400, "User ID, month, and year are required"));
+        const { month, year } = req.body;
+        const userId = req.userId; // Securely retrieved from auth middleware
+        if (!month || !year) {
+            return res.send(error(400, "Month and year are required"));
         }
         
         let budget = await budgetModel.findOne({ usersid: userId, month, year });
@@ -22,15 +23,16 @@ const getBudget = async (req, res) => {
         
         return res.send(success(200, budget));
     } catch (e) {
-        return res.send(error(400, e.message));
+        return res.send(error(500, e.message));
     }
 };
 
 const updateBudget = async (req, res) => {
     try {
-        const { userId, month, year, monthlyLimit, categoryLimits } = req.body;
-        if (!userId || !month || !year) {
-            return res.send(error(400, "User ID, month, and year are required"));
+        const { month, year, monthlyLimit, categoryLimits } = req.body;
+        const userId = req.userId; // Securely retrieved from auth middleware
+        if (!month || !year) {
+            return res.send(error(400, "Month and year are required"));
         }
         
         let budget = await budgetModel.findOne({ usersid: userId, month, year });
@@ -52,7 +54,7 @@ const updateBudget = async (req, res) => {
         await budget.save();
         return res.send(success(200, budget));
     } catch (e) {
-        return res.send(error(400, e.message));
+        return res.send(error(500, e.message));
     }
 };
 

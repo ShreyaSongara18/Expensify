@@ -1,11 +1,12 @@
 const { createExpense, deleteExpense, getCategoryExpense, getAllExpenses, emailSender } = require('../controller/expenseController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = require('express').Router();
 
-router.post('/addExpense',createExpense)
-router.post('/deleteExpense',deleteExpense)
-router.get('/categoryExpense',getCategoryExpense)
-router.post('/allExpenses',getAllExpenses)
-router.post('/sendEmail',emailSender);
+router.post('/addExpense', authMiddleware, createExpense)
+router.post('/deleteExpense', authMiddleware, deleteExpense)
+router.get('/categoryExpense', authMiddleware, getCategoryExpense)
+router.post('/allExpenses', authMiddleware, getAllExpenses)
+router.post('/sendEmail', authMiddleware, emailSender);
 
 module.exports = router;

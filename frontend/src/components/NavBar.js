@@ -23,6 +23,7 @@ function NavBar(props) {
       ref.current.staticStart();
 
       localStorage.removeItem('User');
+      localStorage.removeItem('Token');
       toast.success("Logout Successfully!!")
       ref.current.complete();
 

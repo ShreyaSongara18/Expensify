@@ -1,5 +1,6 @@
 const userModel = require('../db/userModel')
 const { error, success } = require('../utils/handler')
+const jwt = require('jsonwebtoken');
 
 const loginController = async (req,res)=>{
     try {
@@ -15,7 +16,7 @@ const loginController = async (req,res)=>{
             ]
         });
         if(!user) {
-           return res.send(error(401 , "User Not Found!! Please Sign Up"));
+           return res.send(error(404 , "User Not Found!! Please Sign Up"));
         }
         
         const isMatch = await user.matchPassword(password);
@@ -23,17 +24,31 @@ const loginController = async (req,res)=>{
             return res.send(error(401, "Invalid Password!!"));
         }
         
-        return res.send(success(201 , user));
+        const token = jwt.sign(
+            { userId: user._id }, 
+            process.env.JWT_SECRET || 'fallback_secret_for_dev_only', 
+            { expiresIn: '7d' }
+        );
+
+        const userToSend = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            profilePic: user.profilePic,
+            securityQuestion: user.securityQuestion
+        };
+
+        return res.send(success(200 , { token, user: userToSend }));
     } catch (err) {
-        return res.send(error(401,err.message));
+        return res.send(error(500, err.message));
     }
 }
 
-const signupContorller = async (req,res)=>{
+const signupController = async (req,res)=>{
     try {
         const {username , email , password, securityQuestion, securityAnswer } = req.body;
         if(!username || !email || !password) {
-           return res.send(error(401 , "Enter Every Field!!!"));
+           return res.send(error(400 , "Enter Every Field!!!"));
         }
         
         // Check if user already exists
@@ -52,13 +67,14 @@ const signupContorller = async (req,res)=>{
         
         return res.send(success(201 , "user is created"));
     } catch (err) {
-       return res.send(error(401 , err.message));
+       return res.send(error(500 , err.message));
     }
 }
 
 const updateProfileController = async (req, res) => {
     try {
-        const { userId, username, email, profilePic } = req.body;
+        const { username, email, profilePic } = req.body;
+        const userId = req.userId; // Securely retrieved from auth middleware
         const user = await userModel.findById(userId);
         if (!user) {
             return res.send(error(404, "User not found"));
@@ -68,7 +84,16 @@ const updateProfileController = async (req, res) => {
         if (profilePic !== undefined) user.profilePic = profilePic;
         
         await user.save();
-        return res.send(success(200, user));
+
+        const userToSend = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            profilePic: user.profilePic,
+            securityQuestion: user.securityQuestion
+        };
+
+        return res.send(success(200, userToSend));
     } catch (err) {
         return res.send(error(400, err.message));
     }
@@ -76,7 +101,8 @@ const updateProfileController = async (req, res) => {
 
 const changePasswordController = async (req, res) => {
     try {
-        const { userId, oldPassword, newPassword } = req.body;
+        const { oldPassword, newPassword } = req.body;
+        const userId = req.userId; // Securely retrieved from auth middleware
         const user = await userModel.findById(userId);
         if (!user) {
             return res.send(error(404, "User not found"));
@@ -115,7 +141,7 @@ const resetPasswordController = async (req, res) => {
         if (!user) {
             return res.send(error(404, "User not found"));
         }
-        if (user.securityAnswer.toLowerCase().trim() !== securityAnswer.toLowerCase().trim()) {
+        if (!user.securityAnswer || user.securityAnswer.toLowerCase().trim() !== securityAnswer.toLowerCase().trim()) {
             return res.send(error(400, "Incorrect answer to the security question"));
         }
         user.password = newPassword;
@@ -133,7 +159,7 @@ const logoutController = async (req,res) => {
 module.exports = {
     loginController,
     logoutController,
-    signupContorller,
+    signupController,
     updateProfileController,
     changePasswordController,
     forgotPasswordController,

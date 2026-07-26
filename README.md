@@ -85,16 +85,17 @@ npm install
 
 ### 3. Configure Environment Variables
 
-Create a `.env` file inside the `backend` folder and add the following variables:
+Copy `backend/.env.example` to `backend/.env` inside the `backend` folder and configure the following variables:
 
 ```env
 PORT=4000
 MONGO_URI=your_mongodb_connection_string
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_gmail_app_password
+JWT_SECRET=your_jwt_secret_key_here
 ```
 
-> Replace the placeholder values with your own MongoDB connection string and Gmail App Password.
+> **Security Note:** Never commit your `.env` file to version control. It is already included in `backend/.gitignore`. You can generate a random secret key for `JWT_SECRET` using `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`.
 
 ### 4. Start the Backend Server
 

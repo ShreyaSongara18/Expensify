@@ -6,12 +6,22 @@ const { error, success } = require('../utils/handler');
 const createExpense = async (req,res)=>{
     try {
         console.log("Incoming transaction payload:", req.body);
-        const {amount , category , date , usersid, title, paymentMethod, description} = req.body;
-        if(!amount || !category || !date || !usersid || !title)
+        const {amount , category , date , title, paymentMethod, description, type} = req.body;
+        const usersid = req.userId; // Securely retrieved from auth middleware
+        if(!amount || !category || !date || !title)
         {
-            return res.send(error(401,"All Details Are Required"));
+            return res.send(error(400,"All Details Are Required"));
         }
-        const newExpense = await expenseModel.create(req.body);
+        const newExpense = await expenseModel.create({
+            amount,
+            category,
+            date,
+            usersid,
+            title,
+            paymentMethod,
+            description,
+            type: type || 'Expense'
+        });
         const userToUse = await userModel.findById(usersid);
         if(!userToUse) {
             return res.send(error(404, "User not found"));
@@ -21,18 +31,24 @@ const createExpense = async (req,res)=>{
         return res.send(success(200,newExpense))
         
     } catch (e) {
-        return res.send(error(401,e.message))
+        return res.send(error(500,e.message))
     }
 }
 
 const deleteExpense = async (req,res)=>{
     try {
-        const {expenseId , userId} = req.body;
+        const {expenseId} = req.body;
+        const userId = req.userId; // Securely retrieved from auth middleware
         const expense = await expenseModel.findById(expenseId)
         const user = await userModel.findById(userId);
         if(!expense || !user)
         {
-            return res.send(error(401,`Invalid expense or user`))
+            return res.send(error(400,`Invalid expense or user`))
+        }
+
+        // Ownership Check: Ensure this expense belongs to the authenticated user
+        if (expense.usersid.toString() !== userId.toString()) {
+            return res.send(error(403, "Forbidden: You do not own this expense"));
         }
         
         await expenseModel.findByIdAndDelete(expenseId);
@@ -43,13 +59,14 @@ const deleteExpense = async (req,res)=>{
         await user.save();
         return res.send(success(201,{respo : 'Successfully Deleted' , user}));
     } catch (e) {
-       return res.send(error(401,e.message))
+       return res.send(error(500,e.message))
     }
 }
 
 const getAllExpenses = async (req,res)=>{
     try {
-        const {userId, search, category, startDate, endDate, sortBy, order, page, limit} = req.body;
+        const {search, category, startDate, endDate, sortBy, order, page, limit} = req.body;
+        const userId = req.userId; // Securely retrieved from auth middleware
         if (!userId) {
             return res.send(error(400, "User ID is required"));
         }
@@ -104,13 +121,13 @@ const getAllExpenses = async (req,res)=>{
             pages: Math.ceil(total / limitNum)
         }));
     } catch (e) {
-        return res.send(error(401,e.message))   
+        return res.send(error(500,e.message))   
     }
 }
 
 const getCategoryExpense = async (req,res)=>{
     try {
-        const { userId } = req.body;
+        const userId = req.userId; // Securely retrieved from auth middleware
         const expenses = await expenseModel.find({ usersid: userId });
         
         // Aggregate by category
@@ -121,7 +138,7 @@ const getCategoryExpense = async (req,res)=>{
         
         return res.send(success(200, categoryData));
     } catch (e) {
-        return res.send(error(401,e.message))
+        return res.send(error(500,e.message))
     }
 }
 
@@ -131,7 +148,7 @@ const emailSender = (req,res)=>{
         sendEmailWithAttachment(recipient,body);
         return res.send(success(201,"Email Sent"))
     } catch (error) {
-        return res.send(error(401,"Email Is Wrong"))
+        return res.send(error(500,"Email Is Wrong"))
     }
 }
 
